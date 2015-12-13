@@ -2,6 +2,7 @@ TEMPLATE = app
 CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
+TARGET = RootControl
 DEFINES += STM32F103VC STM32F10X_HD SYSTEM_LIB SUPPORT_CPLUSPLUS USE_STDPERIPH_DRIVER __ASSEMBLY__ __FPU_USED=0 __FPU_PRESENT=0
 
 
@@ -61,7 +62,11 @@ SOURCES += main.cpp \
     stm_lib/src/stm32f10x_spi.c \
     stm_lib/src/stm32f10x_tim.c \
     syscalls/syscalls.c \
-    TouchPanel/TouchPanel.c
+    TouchPanel/TouchPanel.c \
+    debug.cpp \
+    stm_lib/src/stm32f10x_usart.c \
+    i2c.c \
+    wg2dplot.cpp
 
 HEADERS += \
     brain.h \
@@ -121,5 +126,9 @@ HEADERS += \
     stm_lib/inc/stm32f10x_rtc.h \
     stm_lib/inc/stm32f10x_spi.h \
     stm_lib/inc/stm32f10x_tim.h \
-    TouchPanel/TouchPanel.h
-
+    TouchPanel/TouchPanel.h \
+    debug.h \
+    stm_lib/inc/stm32f10x_usart.h \
+    i2c.h \
+    wg2dplot.h
+QMAKE_POST_LINK = $$quote($$QMAKE_OBJCOPY -O binary $$OUT_PWD/$$DESTDIR/$$TARGET $$OUT_PWD/$$DESTDIR/"$$TARGET".bin)

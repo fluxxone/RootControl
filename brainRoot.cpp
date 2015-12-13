@@ -1,7 +1,9 @@
 #include "brainRoot.h"
-
+#include "debug.h"
 void BrainRoot::run()
 {
+	DEBUG.print("Brain thread started!\r\n");
+
 	while(1)
 	{
 		Mbox::Message msg = MailBox->pendMail();

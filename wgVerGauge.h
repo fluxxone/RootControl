@@ -1,12 +1,20 @@
 #include "widget.h"
-
+#define MAX_NUM_CHARS	6
 class wgVerGauge : public Widget
 {
 public:
-	wgVerGauge(int xarg, int yarg, int w, int h) : Widget(xarg, yarg) {width = w; height = h;}
-	virtual void setValue(int val);
+	wgVerGauge(int xarg, int yarg, int w, int h, uint32_t max_val, uint32_t min_val) : Widget(xarg, yarg),numChars(0),_multiplier(1),_divider(1),maxVal(max_val), minVal(min_val),_unitSymbol('%') {_width = w; _height = h;}
+	virtual void setValue(Emitter* emitter, uint32_t val);
 	virtual uint16_t getPixel(int xcoord, int ycoord);
-	virtual uint8_t getValueWhenClicked(uint16_t ax, uint16_t ay);
+	virtual uint32_t getValueWhenClicked(uint16_t ax, uint16_t ay);
+	void setUnit(char unitSymbol){_unitSymbol = unitSymbol;}
+	void setScaleFactor(uint32_t divider, uint32_t multiplier){_divider=divider;_multiplier=multiplier;}
 protected:
-	unsigned char buffer[16*3];
+	unsigned char buffer[16*MAX_NUM_CHARS];
+	uint8_t numChars;
+	uint32_t maxVal;
+	uint32_t minVal;
+	uint32_t _divider;
+	uint32_t _multiplier;
+	char _unitSymbol;
 };

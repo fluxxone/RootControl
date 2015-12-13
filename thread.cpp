@@ -1,6 +1,6 @@
 #include "thread.h"
 
-Thread* Thread::threads[10]{0};
+Thread* Thread::threads[MAX_NUM_THREADS]{0};
 int Thread::numThreads = 0;
 
 void Thread::runThread(void* threadToRun)

@@ -1,7 +1,7 @@
 #include "display.h"
 #include "GLCD.h"
 #include "widget.h"
-
+#include "debug.h"
 void Display::SetPixelMask(uint16_t x, uint16_t y)
 {
 	widgetMask[(x*DISPLAY_HEIGHT)/8+y]|=(1<<((x*DISPLAY_HEIGHT)%8));
@@ -57,6 +57,7 @@ Widget* Display::getTargetWidget(uint16_t x, uint16_t y)
 
 void Display::run()
 {
+	DEBUG.print("Display thread started!\r\n");
 	while(1)
 	{
 		uint16_t i = 0, j = 0, k = 0, w = 0;

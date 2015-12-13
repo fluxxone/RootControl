@@ -17,7 +17,7 @@ void Widget::listen(Sensor* sensor)
 }
 void Widget::update(Emitter* emitter, uint32_t value)
 {
-	setValue(value);
+	setValue(emitter,value);
 }
 bool Widget::isInside(uint16_t ax, uint16_t ay)
 {

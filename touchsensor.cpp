@@ -5,6 +5,7 @@
 #include "listener.h"
 #include "display.h"
 #include "widget.h"
+#include "debug.h"
 TouchSensor* TouchSensor::current = 0;
 TouchSensor::TouchSensor(Display* arg):disp(arg)
 {
@@ -19,6 +20,7 @@ void TouchSensor::calibrate()
 
 void TouchSensor::run()
 {
+	DEBUG.print("TouchSensor thread started!\r\n");
 	Coordinate *co;
 	while(1)
 	{
@@ -31,11 +33,11 @@ void TouchSensor::run()
 			Widget* w = disp->getTargetWidget(x,y);
 			if(w)
 			{
-				uint8_t val = w->getValueWhenClicked(x,y);
+				uint32_t val = w->getValueWhenClicked(x,y);
 				w->update(this,val);
-				for(int i = 0; i < numListeners; i++)
+				for(int i = 0; i < _numListeners; i++)
 				{
-					listeners[i]->update(this, val);
+					_listeners[i]->update(this, val);
 				}
 			}
 

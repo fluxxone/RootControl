@@ -8,39 +8,56 @@
 #include "CoOS.h"
 #include "CoOS/OsConfig.h"
 #include "touchsensor.h"
-
+#include "debug.h"
+#include "sensHumidity.h"
+#include "wg2dplot.h"
 int main(void)
 {
 	CoThread::InitCoOS();
+
+	Debug debugger;
+	debugger.print("Welcome to RootControl!\r\n");
+
 	BrainRoot brain;
 	Display display;
-	sensDummy dummySensor1(2);
-	sensDummy dummySensor2(20);
-	wgVerGauge gauge1(10, 10, 40, 220);
-	wgVerGauge gauge2(270, 10, 40, 220);
+
+
+
+	wgVerGauge gauge1(10, 10, 60, 220, 400, 100);
+	wgVerGauge gauge2(250, 10, 60, 220, 1000, 0);
+	gauge1.setScaleFactor(10,1);
+	gauge2.setScaleFactor(10,1);
+	gauge1.setUnit('C');
+	gauge2.setUnit('%');
+
+	wg2DPlot Plot(80,10,160,220,8);
 
 	TouchSensor touchsensor(&display);
 	touchsensor.calibrate();
 	touchsensor.addListener(&brain);
-	//touchsensor.calibrate();
-	dummySensor1.addListener(&brain);
-	//dummySensor1.addListener(&gauge1);
 
-	dummySensor2.addListener(&brain);
-	dummySensor2.addListener(&gauge2);
+	sensHumidityTemperature humidityTempSensor;
+	humidityTempSensor.sensHumi.addListener(&brain);
+	humidityTempSensor.sensTemp.addListener(&brain);
+	humidityTempSensor.sensHumi.addListener(&gauge2);
+	humidityTempSensor.sensTemp.addListener(&gauge1);
+
+	Plot.addTrace(&humidityTempSensor.sensHumi,0,1000,COLOR_BLUE);
+	Plot.addTrace(&humidityTempSensor.sensTemp,100,400,COLOR_RED);
 
 	display.addWidget(&gauge1);
 	display.addWidget(&gauge2);
+	display.addWidget(&Plot);
 
-	dummySensor1.start();
-	dummySensor2.start();
+	humidityTempSensor.start();
 	touchsensor.start();
 	brain.start();
 	display.start();
 
 	CoThread::StartCoOS();
-    while(1)
-    {
-    }
+	debugger.print("Major error! CoOS died!\r\n");
+	while(1)
+	{
+	}
 }
 
