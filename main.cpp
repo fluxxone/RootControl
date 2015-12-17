@@ -10,6 +10,7 @@
 #include "touchsensor.h"
 #include "debug.h"
 #include "sensHumidity.h"
+#include "sensClock.h"
 #include "wg2dplot.h"
 int main(void)
 {
@@ -29,10 +30,10 @@ int main(void)
 	gauge2.setScaleFactor(10,1);
 	gauge1.setUnit('C');
 	gauge2.setUnit('%');
+	sensClock clock(SENSOR_ID_CLOCK);
+	wg2DPlot Plot(80,10,160,220,&clock,8);
 
-	wg2DPlot Plot(80,10,160,220,8);
-
-	TouchSensor touchsensor(&display);
+	TouchSensor touchsensor(SENSOR_ID_DISPLAY, &display);
 	touchsensor.calibrate();
 	touchsensor.addListener(&brain);
 
@@ -44,11 +45,13 @@ int main(void)
 
 	Plot.addTrace(&humidityTempSensor.sensHumi,0,1000,COLOR_BLUE);
 	Plot.addTrace(&humidityTempSensor.sensTemp,100,400,COLOR_RED);
-
+	Plot.addTrace(&brain.refTemp,100,400,COLOR_GREEN);
+	Plot.addTrace(&brain.refHumi,0,1000,COLOR_BLUE|COLOR_GREEN);
 	display.addWidget(&gauge1);
 	display.addWidget(&gauge2);
 	display.addWidget(&Plot);
 
+	clock.start();
 	humidityTempSensor.start();
 	touchsensor.start();
 	brain.start();

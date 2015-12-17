@@ -7,7 +7,7 @@
 #include "widget.h"
 #include "debug.h"
 TouchSensor* TouchSensor::current = 0;
-TouchSensor::TouchSensor(Display* arg):disp(arg)
+TouchSensor::TouchSensor(SENSOR_ID ID, Display* arg):Sensor(ID),disp(arg)
 {
 	TP_Init();
 	//EXTI_Exp();
@@ -33,11 +33,11 @@ void TouchSensor::run()
 			Widget* w = disp->getTargetWidget(x,y);
 			if(w)
 			{
-				uint32_t val = w->getValueWhenClicked(x,y);
-				w->update(this,val);
+				_value = w->getValueWhenClicked(x,y);
+				w->update(this,_value);
 				for(int i = 0; i < _numListeners; i++)
 				{
-					_listeners[i]->update(this, val);
+					_listeners[i]->update(this, _value);
 				}
 			}
 

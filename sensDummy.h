@@ -6,10 +6,9 @@
 class sensDummy : public Sensor
 {
 public:
-	sensDummy(int v):val(v) {}
+	sensDummy(SENSOR_ID ID,int v):Sensor(ID) {_value = v;}
 protected:
 	virtual void run();
-	int val;
 };
 
 #endif

@@ -8,20 +8,28 @@
 class wg2DPlot : public Widget
 {
 public:
-	wg2DPlot(int xarg, int yarg, int w, int h, uint8_t numDataPoints = 4 ) : Widget(xarg, yarg), _numDataPoints(numDataPoints){_width = w; _height = h; _numTraces = 0;}
+	wg2DPlot(int xarg, int yarg, int w, int h, Emitter* clock,uint8_t numDataPoints = 4 ) : Widget(xarg, yarg), _numDataPoints(numDataPoints)
+	{
+
+		_width = w;
+		_height = h;
+		_numTraces = 0;
+		_clock=clock;
+		if(_clock->getEmitterType() == EMITTER_TYPE_SENSOR)
+			dynamic_cast<Sensor*>(_clock)->addListener(this);
+	}
 	virtual void setValue(Emitter* emitter, uint32_t val)
 	{
+		if(emitter != _clock)
+			return;
 		for (uint8_t i = 0; i < _numTraces; i++)
 		{
-			if (emitter == (Emitter*)(_traces[i].sensor))
-			{
-				_traces[i].setValue(val);
-			}
+			_traces[i].setValue(_traces[i].sensor->getValue());
 		}
 	}
 	virtual uint16_t getPixel(int xcoord, int ycoord);
 	virtual uint32_t getValueWhenClicked(uint16_t ax, uint16_t ay) {return 0;}
-	void addTrace(Sensor* sens,uint16_t minVal, uint16_t maxVal, uint16_t color)
+	void addTrace(Sensor* sens,uint16_t minVal, uint16_t maxVal, uint16_t color, bool dashed = false)
 	{
 
 		_traces[_numTraces].minValue = minVal;
@@ -29,7 +37,7 @@ public:
 		_traces[_numTraces].sensor = sens;
 		_traces[_numTraces].traceColor = color;
 		_traces[_numTraces]._maxNumValues = _numDataPoints+1;
-		sens->addListener(this);
+		_traces[_numTraces].traceDashed = dashed;
 		_numTraces++;
 	}
 
@@ -46,6 +54,7 @@ protected:
 		uint32_t maxValue;
 		uint32_t minValue;
 		uint16_t traceColor;
+		bool traceDashed;
 		uint16_t nextVal;
 		uint16_t currVal;
 		uint16_t getValue(int8_t index)
@@ -61,7 +70,7 @@ protected:
 		{
 
 			_values[_valHead] = val;
-			DEBUG.print("Value on index %d set to %d!\r\n",_valHead,val);
+			//DEBUG.print("Value on index %d set to %d!\r\n",_valHead,val);
 			_valHead = (_valHead + 1) % _maxNumValues;
 			if(_numValues < _maxNumValues)
 				_numValues = _numValues + 1;
@@ -77,6 +86,7 @@ protected:
 	Trace _traces[MAX_TRACE_NUM];
 	uint8_t _numTraces;
 	uint8_t _numDataPoints;
+	Emitter* _clock;
 };
 
 #endif // WG2DPLOT_H

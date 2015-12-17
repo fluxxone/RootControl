@@ -1,6 +1,6 @@
 #include "sensor.h"
 #include "listener.h"
-Sensor::Sensor()
+Sensor::Sensor(SENSOR_ID sensID) : _sensID(sensID)
 {
 	_numListeners = 0;
 }

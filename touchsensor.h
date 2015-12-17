@@ -5,7 +5,7 @@ class Display;
 class TouchSensor : public Sensor
 {
 public:
-	TouchSensor(Display* arg);
+	TouchSensor(SENSOR_ID ID, Display* arg);
 	void calibrate();
 	static void tpinterrupt();
 	static TouchSensor* current;

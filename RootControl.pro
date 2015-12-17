@@ -66,7 +66,9 @@ SOURCES += main.cpp \
     debug.cpp \
     stm_lib/src/stm32f10x_usart.c \
     i2c.c \
-    wg2dplot.cpp
+    wg2dplot.cpp \
+    actuator.cpp \
+    acthumi.cpp
 
 HEADERS += \
     brain.h \
@@ -130,5 +132,11 @@ HEADERS += \
     debug.h \
     stm_lib/inc/stm32f10x_usart.h \
     i2c.h \
-    wg2dplot.h
+    wg2dplot.h \
+    project.h \
+    senspassthru.h \
+    actuator.h \
+    acttemp.h \
+    acthumi.h
+QMAKE_CXXFLAGS += -O3
 QMAKE_POST_LINK = $$quote($$QMAKE_OBJCOPY -O binary $$OUT_PWD/$$DESTDIR/$$TARGET $$OUT_PWD/$$DESTDIR/"$$TARGET".bin)

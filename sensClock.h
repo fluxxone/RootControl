@@ -6,7 +6,7 @@
 class sensClock : public Sensor
 {
 public:
-	sensClock();
+	sensClock(SENSOR_ID ID);
 protected:
 	virtual void run();
 };

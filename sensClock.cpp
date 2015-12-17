@@ -1,15 +1,19 @@
 #include "sensClock.h"
 #include "stm32f10x_rtc.h"
+#include "listener.h"
 void sensClock::run()
 {
 	while(1)
 	{
-
-		CoTimeDelay(0,0,0,500);
+		for(int i = 0; i < _numListeners; i++)
+		{
+			_listeners[i]->update(this, 0);
+		}
+		CoTimeDelay(0,0,1,0);
 	}
 }
 
-sensClock::sensClock()
+sensClock::sensClock(SENSOR_ID ID) : Sensor(ID)
 {
 //	NVIC_InitTypeDef NVIC_InitStructure;
 

@@ -175,7 +175,7 @@ bool I2C2ReadReg(uint8_t* ptr,uint8_t num)
 	return false;
 }
 
-sensHumidityTemperature::sensHumidityTemperature()
+sensHumidityTemperature::sensHumidityTemperature() : sensHumi(SENSOR_ID_HUMIDITY), sensTemp(SENSOR_ID_TEMPERATURE)
 {
 	initI2C2();
 	currentHumidity = 0;

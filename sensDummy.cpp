@@ -9,10 +9,10 @@ void sensDummy::run()
 
 		for(int i = 0; i < _numListeners; i++)
 		{
-			_listeners[i]->update(this, val);
+			_listeners[i]->update(this, _value);
 		}
-		if(++val>255)
-			val=0;
+		if(++_value>255)
+			_value=0;
 		CoTimeDelay(0,0,0,200);
 	}
 }
