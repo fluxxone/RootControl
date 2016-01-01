@@ -13,23 +13,27 @@ class actHumi : public Actuator
 public:
 	virtual void setValue(uint32_t value)
 	{
-		status.setVal(value);
+
 
 		switch(value)
 		{
 		case ACTHUMI_TURN_OFF:
 			//turn off
+			status.setVal(COLOR_WHITE);
 			break;
 		case ACTHUMI_HUMIDIFY:
 			//humidify
+			status.setVal(COLOR_RED);
 			break;
 		case ACTHUMI_DEHUMIDIFY:
 			//dehumidify
+			status.setVal(COLOR_BLUE);
 			break;
 		default:
 			//do nothing
 			break;
 		}
+		status.updateListeners();
 	}
 };
 

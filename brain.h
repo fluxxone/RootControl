@@ -8,12 +8,18 @@ class Brain : public Listener, public CoThread
 {
 public:
 	Brain():Listener(LISTENER_TYPE_BRAIN){}
-	virtual void update(Emitter* emitter, uint32_t value)
+	virtual void update(Emitter* emitter, void* data, DATA_TYPE data_type)
 	{
 		Mbox::Message msg;
-		msg.SenderPtr = emitter;
-		msg.data = value;
-		MailBox->sendMail(msg);
+		switch (data_type) {
+		case DATA_TYPE_UINT32:
+			msg.SenderPtr = emitter;
+			msg.data = *((uint32_t*)data);
+			MailBox->sendMail(msg);
+			break;
+		default:
+			break;
+		}
 	}
 protected:
 	virtual void run() = 0;

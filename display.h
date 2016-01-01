@@ -1,32 +1,52 @@
-#ifndef _DISPLAY_H_
-#define _DISPLAY_H_
-#include <stdint.h>
-#include "cothread.h"
-#include "listener.h"
+#ifndef DISPLAY_H
+#define DISPLAY_H
+#define DISPLAY_MAX_SCREENS 8
 #define DISPLAY_HEIGHT	240
 #define DISPLAY_WIDTH	320
-#define LISTENER_TYPE_SCREEN 3
+#include "debug.h"
+#include "cothread.h"
 
-#define COLOR_RED	0xF800
-#define COLOR_GREEN	0x07E0
-#define COLOR_BLUE	0x001F
+//this class should be singleton, but we have no dynamic memory, so we do what we can
+#define DISPLAY (static_cast<Display&>(Display::getInstance()))
 
+class Screen;
 class Widget;
+
+
 class Display : public CoThread
 {
 public:
-	Widget* widgets[1000];
-	virtual uint16_t getPixels(int x, int y);
-	virtual void addWidget(Widget* widget);
 	Display();
-	virtual void run();
+	void addScreen(Screen* screen)
+	{
+		if(_num_screens == 0)
+		{
+			_active_screen = 0;
+		}
+		if(_num_screens == DISPLAY_MAX_SCREENS-1)
+		{
+			DEBUG.print("Maximum number of screens reached, you cannot add new screens\r\n");
+			return;
+		}
+		_screens[_num_screens] = screen;
+		_num_screens++;
+	}
 	Widget* getTargetWidget(uint16_t x, uint16_t y);
+	uint8_t getNumScreens() { DEBUG.print("num=%d\r\n",_num_screens); return _num_screens;}
+	uint8_t getActiveScreen() { DEBUG.print("act=%d\r\n",_active_screen); return _active_screen;}
+	void setActiveScreen(uint8_t arg) { if (arg<_num_screens) _active_screen = arg;}
+	static Display& getInstance()
+	{
+		return *instance;
+	}
+
+	virtual void run();
+
 protected:
-	int numWidgets;
-	uint8_t widgetMask[DISPLAY_WIDTH*DISPLAY_HEIGHT/8 + DISPLAY_HEIGHT];
-	void SetPixelMask(uint16_t x, uint16_t y);
-	bool GetPixelMask(uint16_t x, uint16_t y);
+	static Display* instance;
+	Screen* _screens[DISPLAY_MAX_SCREENS];
+	uint8_t _num_screens;
+	int8_t _active_screen;
 };
 
-
-#endif //_DISPLAY_H_
+#endif // DISPLAY_H

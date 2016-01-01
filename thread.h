@@ -11,8 +11,8 @@ public:
 	Thread()
 	{
 		threadID=numThreads++;
-		if(numThreads > MAX_NUM_THREADS)
-			DEBUG.print("WARNING: Maximum number of threads exceeded (%d). Some threads won't start!\r\n",MAX_NUM_THREADS);
+//		if(numThreads > MAX_NUM_THREADS)
+//			DEBUG.print("WARNING: Maximum number of threads exceeded (%d). Some threads may not start!\r\n",MAX_NUM_THREADS);
 	}
 	virtual void run() = 0;
 	virtual void start() = 0;

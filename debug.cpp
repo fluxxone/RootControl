@@ -5,7 +5,7 @@
 #include "misc.h"
 #include <stdio.h>
 #include <stdarg.h>
-Debug* Debug::instance = 0;
+#include <string.h>
 
 void USART_init(void){
 
@@ -63,15 +63,18 @@ void USART_print(char* StringPtr)
 
 Debug::Debug()
 {
-	if(instance != 0)
-		return;
 	USART_init();
-	instance = this;
+	if(!_logfile.Open("0:/DBGLOG.TXT"))
+		print("ERROR: LOG file not opened!\r\n");
+	else
+		print("LOG file successfully opened\r\n");
+
 }
 
 Debug& Debug::getInstance()
 {
-	return *instance;
+	static Debug instance;
+	return instance;
 }
 
 void Debug::print(const char* format, ...)
@@ -84,5 +87,7 @@ void Debug::print(const char* format, ...)
 	va_end(args);
 
 	USART_print(buffer);
+	_logfile.Write(buffer,strlen(buffer));
+	_logfile.Sync();
 }
 

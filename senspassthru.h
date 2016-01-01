@@ -11,7 +11,7 @@ public:
 	{
 		for(int i = 0; i < _numListeners; i++)
 		{
-			_listeners[i]->update(this, _value);
+			_listeners[i]->update(this, (void*)&_value, DATA_TYPE_UINT32);
 		}
 	}
 

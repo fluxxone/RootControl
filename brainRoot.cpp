@@ -35,8 +35,9 @@ void BrainRoot::run()
 				//DEBUG.print("Got temperature %d\r\n",d);
 				break;
 			default:
-				DEBUG.print("Got something %d\r\n",d);
+				DEBUG.print("Got something unknown %d\r\n",d);
 			}
+
 		}
 
 	}

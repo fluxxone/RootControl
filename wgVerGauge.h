@@ -3,7 +3,7 @@
 class wgVerGauge : public Widget
 {
 public:
-	wgVerGauge(int xarg, int yarg, int w, int h, uint32_t max_val, uint32_t min_val) : Widget(xarg, yarg),numChars(0),_multiplier(1),_divider(1),maxVal(max_val), minVal(min_val),_unitSymbol('%') {_width = w; _height = h;}
+	wgVerGauge(uint8_t xarg, uint8_t yarg, uint8_t w, uint8_t h, uint32_t max_val, uint32_t min_val) : Widget(xarg, yarg, h, w),numChars(0),_multiplier(1),_divider(1),maxVal(max_val), minVal(min_val),_unitSymbol('%') {}
 	virtual void setValue(Emitter* emitter, uint32_t val);
 	virtual uint16_t getPixel(int xcoord, int ycoord);
 	virtual uint32_t getValueWhenClicked(uint16_t ax, uint16_t ay);

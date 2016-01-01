@@ -21,9 +21,10 @@ public:
 	void setTargetTemperature(uint16_t val) { _targetTemp = val;refTemp.setVal(_targetTemp);}
 	sensPassthru refHumi;
 	sensPassthru refTemp;
-protected:
 	actHumi humidityActuator;
 	actTemp temperatureActuator;
+protected:
+
 	uint16_t _targetHumi;
 	uint16_t _targetTemp;
 };

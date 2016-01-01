@@ -18,7 +18,6 @@ SOURCES += main.cpp \
     brainRoot.cpp \
     CoOSMbox.cpp \
     cothread.cpp \
-    display.cpp \
     sensClock.cpp \
     sensDummy.cpp \
     sensHumidity.cpp \
@@ -68,7 +67,29 @@ SOURCES += main.cpp \
     i2c.c \
     wg2dplot.cpp \
     actuator.cpp \
-    acthumi.cpp
+    acthumi.cpp \
+    stm_lib/src/stm32f10x_bkp.c \
+    screen.cpp \
+    display.cpp \
+    wgnavscreens.cpp \
+    wglabel.cpp \
+    wgindicator.cpp \
+    sdcard.cpp \
+    SDCard/SD_Card/sdio_sd.c \
+    SDCard/FATFS/src/option/syscall.c \
+    SDCard/FATFS/src/diskio.c \
+    SDCard/FATFS/src/ff.c \
+    stm_lib/src/stm32f10x_sdio.c \
+    stm_lib/src/stm32f10x_adc.c \
+    stm_lib/src/stm32f10x_can.c \
+    stm_lib/src/stm32f10x_cec.c \
+    stm_lib/src/stm32f10x_crc.c \
+    stm_lib/src/stm32f10x_dac.c \
+    stm_lib/src/stm32f10x_dbgmcu.c \
+    stm_lib/src/stm32f10x_dma.c \
+    stm_lib/src/stm32f10x_iwdg.c \
+    stm_lib/src/stm32f10x_wwdg.c \
+    sdfile.cpp
 
 HEADERS += \
     brain.h \
@@ -76,7 +97,6 @@ HEADERS += \
     CoOSMbox.h \
     cothread.h \
     cothreadtest.h \
-    display.h \
     emitter.h \
     EXTIset.h \
     listener.h \
@@ -113,7 +133,6 @@ HEADERS += \
     CoOS/kernel/OsTimer.h \
     CoOS/kernel/utility.h \
     CoOS/portable/OsArch.h \
-    CoOS/OsConfig.h \
     GLCD/AsciiLib.h \
     GLCD/GLCD.h \
     GLCD/HzLib.h \
@@ -137,6 +156,34 @@ HEADERS += \
     senspassthru.h \
     actuator.h \
     acttemp.h \
-    acthumi.h
-QMAKE_CXXFLAGS += -O3
+    acthumi.h \
+    stm_lib/inc/stm32f10x_bkp.h \
+    screen.h \
+    display.h \
+    wgnavscreens.h \
+    wglabel.h \
+    wgindicator.h \
+    sdcard.h \
+    SDCard/FATFS_V0.08A/src/diskio.h \
+    SDCard/FATFS_V0.08A/src/ff.h \
+    SDCard/FATFS_V0.08A/src/ffconf.h \
+    SDCard/FATFS_V0.08A/src/integer.h \
+    SDCard/SD_Card/sdio_sd.h \
+    SDCard/stm32f10x_conf.h \
+    SDCard/FATFS/src/diskio.h \
+    SDCard/FATFS/src/ff.h \
+    SDCard/FATFS/src/ffconf.h \
+    SDCard/FATFS/src/integer.h \
+    stm_lib/inc/stm32f10x_sdio.h \
+    stm_lib/inc/stm32f10x_adc.h \
+    stm_lib/inc/stm32f10x_can.h \
+    stm_lib/inc/stm32f10x_cec.h \
+    stm_lib/inc/stm32f10x_crc.h \
+    stm_lib/inc/stm32f10x_dac.h \
+    stm_lib/inc/stm32f10x_dbgmcu.h \
+    stm_lib/inc/stm32f10x_dma.h \
+    stm_lib/inc/stm32f10x_iwdg.h \
+    stm_lib/inc/stm32f10x_wwdg.h \
+    sdfile.h
+QMAKE_CXXFLAGS += -Ofast
 QMAKE_POST_LINK = $$quote($$QMAKE_OBJCOPY -O binary $$OUT_PWD/$$DESTDIR/$$TARGET $$OUT_PWD/$$DESTDIR/"$$TARGET".bin)

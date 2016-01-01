@@ -1,12 +1,14 @@
 #include "widget.h"
-#include "display.h"
+#include "screen.h"
 #include "sensor.h"
-Widget::Widget(int xarg, int yarg):Listener(LISTENER_TYPE_WIDGET)
+Widget::Widget(uint16_t xarg, uint16_t yarg, uint16_t height, uint16_t width):Listener(LISTENER_TYPE_WIDGET)
 {
-	x = xarg;
-	y = yarg;
+	_x = xarg;
+	_y = yarg;
+	_height = height;
+	_width = width;
 }
-void Widget::addToDisplay(Display* display)
+void Widget::addToDisplay(Screen* display)
 {
 	display->addWidget(this);
 }
@@ -15,11 +17,21 @@ void Widget::listen(Sensor* sensor)
 {
 	sensor->addListener(this);
 }
-void Widget::update(Emitter* emitter, uint32_t value)
+void Widget::update(Emitter* emitter, void* data, DATA_TYPE data_type)
 {
-	setValue(emitter,value);
+	switch (data_type) {
+	case DATA_TYPE_UINT32:
+		setValue(emitter,*((uint32_t*)data));
+		break;
+	case DATA_TYPE_INVALID:
+		setValue(emitter,0);
+		break;
+	default:
+		break;
+	}
+
 }
 bool Widget::isInside(uint16_t ax, uint16_t ay)
 {
-	return ((ax >= x) && (ax <= (x+getWidth())) && (ay >= y) && (ay <= (y+getHeight())));
+	return ((ax >= _x) && (ax <= (_x+getWidth())) && (ay >= _y) && (ay <= (_y+getHeight())));
 }

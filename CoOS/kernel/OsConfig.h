@@ -55,12 +55,12 @@ Defines the lowest priority that be assigned.
 /*!<
 Max number of tasks that can be running.
 */
-#define CFG_MAX_USER_TASKS      (7)
+#define CFG_MAX_USER_TASKS      (5)
 
 /*!<
 Idle task stack size(word).
 */
-#define CFG_IDLE_STACK_SIZE     (25)
+#define CFG_IDLE_STACK_SIZE     (50)
 
 /*!<
 System frequency (Hz).

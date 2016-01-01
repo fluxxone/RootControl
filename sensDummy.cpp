@@ -9,7 +9,7 @@ void sensDummy::run()
 
 		for(int i = 0; i < _numListeners; i++)
 		{
-			_listeners[i]->update(this, _value);
+			_listeners[i]->update(this, &_value, DATA_TYPE_UINT32);
 		}
 		if(++_value>255)
 			_value=0;

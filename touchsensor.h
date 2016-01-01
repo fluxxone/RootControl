@@ -5,14 +5,14 @@ class Display;
 class TouchSensor : public Sensor
 {
 public:
-	TouchSensor(SENSOR_ID ID, Display* arg);
+	TouchSensor(SENSOR_ID ID, Display* display);
 	void calibrate();
 	static void tpinterrupt();
 	static TouchSensor* current;
 	uint16_t xValue;
 	uint16_t yValue;
 protected:
-	Display* disp;
+	Display* _display;
 	virtual void run();
 
 };

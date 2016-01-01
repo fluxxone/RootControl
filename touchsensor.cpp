@@ -7,7 +7,7 @@
 #include "widget.h"
 #include "debug.h"
 TouchSensor* TouchSensor::current = 0;
-TouchSensor::TouchSensor(SENSOR_ID ID, Display* arg):Sensor(ID),disp(arg)
+TouchSensor::TouchSensor(SENSOR_ID ID, Display* display):Sensor(ID),_display(display)
 {
 	TP_Init();
 	//EXTI_Exp();
@@ -15,6 +15,7 @@ TouchSensor::TouchSensor(SENSOR_ID ID, Display* arg):Sensor(ID),disp(arg)
 }
 void TouchSensor::calibrate()
 {
+	DEBUG.print("TouchSensor calibration starting!\r\n");
 	TouchPanel_Calibrate();
 }
 
@@ -28,16 +29,17 @@ void TouchSensor::run()
 		if(co != 0)
 		{
 			//uint32_t data = (co->x << 16) | co->y;
+			DEBUG.print("Touch!\r\n");
 			uint16_t x = (co->x * DISPLAY_WIDTH)/4095-20;
 			uint16_t y = (co->y * DISPLAY_HEIGHT)/4095;
-			Widget* w = disp->getTargetWidget(x,y);
+			Widget* w = _display->getTargetWidget(x,y);
 			if(w)
 			{
 				_value = w->getValueWhenClicked(x,y);
-				w->update(this,_value);
+				w->update(this, &_value, DATA_TYPE_UINT32);
 				for(int i = 0; i < _numListeners; i++)
 				{
-					_listeners[i]->update(this, _value);
+					_listeners[i]->update(this, &_value, DATA_TYPE_UINT32);
 				}
 			}
 

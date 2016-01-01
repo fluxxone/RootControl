@@ -2,8 +2,8 @@
 #include "sensor.h"
 uint16_t wg2DPlot::getPixel(int xcoord, int ycoord)
 {
-	uint16_t xc = xcoord - x;
-	uint16_t yc = ycoord - y;
+	uint16_t xc = xcoord - _x;
+	uint16_t yc = ycoord - _y;
 	uint16_t pix = 0xFFFF;
 
 	uint16_t interval = ((_width+1)/_numDataPoints);

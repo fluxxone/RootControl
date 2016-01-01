@@ -8,7 +8,7 @@
 class wg2DPlot : public Widget
 {
 public:
-	wg2DPlot(int xarg, int yarg, int w, int h, Emitter* clock,uint8_t numDataPoints = 4 ) : Widget(xarg, yarg), _numDataPoints(numDataPoints)
+	wg2DPlot(uint8_t xarg, uint8_t yarg, uint8_t h, uint8_t w, Emitter* clock,uint8_t numDataPoints = 4 ) : Widget(xarg, yarg, h, w), _numDataPoints(numDataPoints)
 	{
 
 		_width = w;
