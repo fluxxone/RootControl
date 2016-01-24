@@ -6,6 +6,7 @@
 #include "display.h"
 #include "widget.h"
 #include "debug.h"
+#include "sensClock.h"
 TouchSensor* TouchSensor::current = 0;
 TouchSensor::TouchSensor(SENSOR_ID ID, Display* display):Sensor(ID),_display(display)
 {

@@ -89,7 +89,9 @@ SOURCES += main.cpp \
     stm_lib/src/stm32f10x_dma.c \
     stm_lib/src/stm32f10x_iwdg.c \
     stm_lib/src/stm32f10x_wwdg.c \
-    sdfile.cpp
+    sdfile.cpp \
+    acttemp.cpp \
+    actled.cpp
 
 HEADERS += \
     brain.h \
@@ -184,6 +186,8 @@ HEADERS += \
     stm_lib/inc/stm32f10x_dma.h \
     stm_lib/inc/stm32f10x_iwdg.h \
     stm_lib/inc/stm32f10x_wwdg.h \
-    sdfile.h
+    sdfile.h \
+    rootcontrolsettings.h \
+    actled.h
 QMAKE_CXXFLAGS += -Ofast
 QMAKE_POST_LINK = $$quote($$QMAKE_OBJCOPY -O binary $$OUT_PWD/$$DESTDIR/$$TARGET $$OUT_PWD/$$DESTDIR/"$$TARGET".bin)

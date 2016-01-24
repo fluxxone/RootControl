@@ -16,6 +16,13 @@ public:
 			msg.SenderPtr = emitter;
 			msg.data = *((uint32_t*)data);
 			MailBox->sendMail(msg);
+			//DEBUG.print("received uint32\r\n");
+			break;
+		case DATA_TYPE_INT32:
+			msg.SenderPtr = emitter;
+			msg.data = *((int32_t*)data);
+			MailBox->sendMail(msg);
+			//DEBUG.print("received int32\r\n");
 			break;
 		default:
 			break;

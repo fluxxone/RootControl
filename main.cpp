@@ -17,8 +17,43 @@
 #include "wglabel.h"
 #include "wgindicator.h"
 #include "sdfile.h"
+
+#include <stm32f10x_gpio.h>
+#include <stm32f10x_rcc.h>
+
 int main(void)
 {
+
+//	GPIO_InitTypeDef GPIO_InitStructure;
+
+
+//	RCC_APB2PeriphClockCmd( RCC_APB2Periph_GPIOE , ENABLE);
+
+//	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_6;
+//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+//	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+//	GPIO_Init(GPIOE, &GPIO_InitStructure);
+//	GPIO_SetBits(GPIOE,GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_6);
+
+//	RCC_APB2PeriphClockCmd( RCC_APB2Periph_GPIOC , ENABLE);
+
+//	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_3;
+//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+//	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+//	GPIO_Init(GPIOC, &GPIO_InitStructure);
+//	GPIO_SetBits(GPIOC,GPIO_Pin_1 | GPIO_Pin_3);
+
+//	RCC_APB2PeriphClockCmd( RCC_APB2Periph_GPIOA , ENABLE);
+
+//	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
+//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+//	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+//	GPIO_Init(GPIOA, &GPIO_InitStructure);
+//	GPIO_SetBits(GPIOA,GPIO_Pin_1);
+
+//	while(1)
+//	;
+
 	CoThread::InitCoOS();
 	//sensClock clock(SENSOR_ID_CLOCK);
 	DEBUG.print("Welcome to RootControl!\r\n");
@@ -35,7 +70,7 @@ int main(void)
 
 //	testFile.Write("Leba ti jebem!\r\n12345\r\n",sizeof("Leba ti jebem!\r\n12345\r\n")-1);
 //	testFile.Close();
-	DEBUG.print("Finished writing the file!\r\n");
+//	DEBUG.print("Finished writing the file!\r\n");
 	Display display;
 	BrainRoot brain;
 	Screen mainScreen;
@@ -59,6 +94,7 @@ int main(void)
 	wgLabel wgClockLabel(80,200,30,160);
 	wgIndicator wgCoolHeat(80,200,30,30);
 	wgIndicator wgHumi(120,200,30,30);
+	wgIndicator wgLed(160,200,30,30);
 
 	DEBUG.print("Calibrating touch sensor!\r\n");
 	TouchSensor touchsensor(SENSOR_ID_DISPLAY, &display);
@@ -67,6 +103,7 @@ int main(void)
 
 	DEBUG.print("Adding clock listeners!\r\n");
 	SENSCLOCK.addListener(&wgClockLabel);
+	SENSCLOCK.addListener(&brain);
 
 	DEBUG.print("Initializing humidity sensor!\r\n");
 	sensHumidityTemperature humidityTempSensor;
@@ -81,6 +118,7 @@ int main(void)
 	Plot.addTrace(&brain.refHumi,0,1000,COLOR_BLUE|COLOR_GREEN);
 	brain.humidityActuator.status.addListener(&wgHumi);
 	brain.temperatureActuator.status.addListener(&wgCoolHeat);
+	brain.ledActuator.status.addListener(&wgLed);
 	DEBUG.print("Adding widgets to screens!\r\n");
 	mainScreen.addWidget(&gauge1);
 	mainScreen.addWidget(&gauge2);
@@ -89,6 +127,7 @@ int main(void)
 	mainScreen.addWidget(&wgPrev);
 	mainScreen.addWidget(&wgCoolHeat);
 	mainScreen.addWidget(&wgHumi);
+	mainScreen.addWidget(&wgLed);
 	settingsScreen.addWidget(&wgClockLabel);
 	settingsScreen.addWidget(&wgNext);
 	settingsScreen.addWidget(&wgPrev);

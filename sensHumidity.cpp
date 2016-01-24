@@ -6,6 +6,7 @@
 #include "debug.h"
 #include "inttypes.h"
 #include "i2c.h"
+#include "string.h"
 #define i2c2_FLAG_TIMEOUT	((uint32_t)0x1000)
 #define i2c2_LONG_TIMEOUT	((uint32_t)(500 *i2c2_FLAG_TIMEOUT))
 #define AM2321_ADDRESS		(0xB8)
@@ -113,6 +114,7 @@ void I2C2Write(const uint8_t* ptr,uint8_t num)
 	I2C_GenerateSTOP(I2C2,ENABLE);
 
 	Timed(I2C_GetFlagStatus(I2C2, I2C_FLAG_STOPF));
+	SoftDelay_us(2000);
 	return;
 
 	errReturn:
@@ -141,9 +143,8 @@ bool I2C2ReadReg(uint8_t* ptr,uint8_t num)
 	Timed(!I2C_GetFlagStatus(I2C2,I2C_FLAG_SB));
 
 	I2C_Send7bitAddress(I2C2, AM2321_ADDRESS, I2C_Direction_Receiver);
-
+	SoftDelay_us(300);
 	Timed(!I2C_CheckEvent(I2C2,I2C_EVENT_MASTER_RECEIVER_MODE_SELECTED));
-
 	for(uint8_t i = 0; i < num; i++)
 	{
 		Timed(!I2C_CheckEvent(I2C2,I2C_EVENT_MASTER_BYTE_RECEIVED));
@@ -232,6 +233,7 @@ void sensHumidityTemperature::run()
 	while(1)
 	{
 		CoSchedLock();
+		memset(buffer,0,8);
 		AM2321_wakeup();
 		I2C2Write(READ_REGISTER_CMD,3);
 		I2C2ReadReg(buffer,8);
@@ -242,7 +244,7 @@ void sensHumidityTemperature::run()
 		uint16_t Temperature = (buffer[4] << 8) + buffer[5];
 		uint16_t recvCRC = buffer[6] + (buffer[7] * 256);
 		uint16_t chkCRC  = calcCRC16(&buffer[0], 6);
-
+		//DEBUG.print("%02x %02x %02x %02x %02x %02x %02x %02x\r\n", buffer[0],buffer[1],buffer[2],buffer[3],buffer[4],buffer[5],buffer[6],buffer[7]);
 		if(dataLen == 4)
 		{
 			if(recvCRC == chkCRC)
@@ -253,6 +255,7 @@ void sensHumidityTemperature::run()
 					currentTemperature = Temperature;
 					sensHumi.setVal(Humidity);
 					sensTemp.setVal(Temperature);
+					//DEBUG.print("Hum=%u\r\n",Humidity);
 					sensHumi.updateListeners();
 					sensTemp.updateListeners();
 				}

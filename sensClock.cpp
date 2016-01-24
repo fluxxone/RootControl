@@ -11,8 +11,9 @@
 #include <time.h>
 #include <stdio.h>
 
+static void RTC_Configuration(void);
 struct tm Time_GetCalendarTime(void);
-
+time_t Time_GetUnixTime(void);
 void RTC_Init(void);
 
 sensClock& sensClock::getInstance()
@@ -26,6 +27,7 @@ void sensClock::run()
 	while(1)
 	{
 		struct tm time;
+		_timeUnix = Time_GetUnixTime();
 		time = Time_GetCalendarTime();
 		sprintf(_timeDate,"%d.%d.%d. %02d:%02d:%02d", time.tm_mday, \
 			time.tm_mon+1, time.tm_year,\
@@ -33,8 +35,8 @@ void sensClock::run()
 		for(int i = 0; i < _numListeners; i++)
 		{
 			_listeners[i]->update(this, 0, DATA_TYPE_INVALID);
-
 			_listeners[i]->update(this, _timeDate, DATA_TYPE_STRING);
+			_listeners[i]->update(this,(void*)(&_timeUnix),DATA_TYPE_INT32);
 
 		}
 		CoTimeDelay(0,0,1,0);
@@ -44,16 +46,44 @@ void sensClock::run()
 sensClock::sensClock(SENSOR_ID ID) : Sensor(ID)
 {
 	_timeDate[0]=0;
+//	static bool setClock = true;
+//	if(setClock)
+//	{
+//		struct tm t;
+//		t.tm_hour = 22;
+//		t.tm_min = 5;
+//		t.tm_sec = 0;
+//		t.tm_isdst = 0;
+//		t.tm_mday = 22;
+//		t.tm_mon = 0;
+//		t.tm_year = 2016;
+//		RTC_Configuration();
+//		DEBUG.print("Setting the clock!\r\n");
+//		CoSchedLock();
+//		sensClock::Time_SetCalendarTime(t);
+//		BKP_WriteBackupRegister(BKP_DR1, 0xA5A5);
+//		CoSchedUnlock();
+//		DEBUG.print("The clock is set!\r\n");
+//		setClock = false;
+//	}
 	RTC_Init();
 }
 
 
 
+struct tm sensClock::Time_ConvUnixToCalendar(time_t t)
+{
+	struct tm *t_tm;
+	t_tm = localtime(&t);
+	t_tm->tm_year += 1900;
+	return *t_tm;
+}
+
 struct tm Time_ConvUnixToCalendar(time_t t)
 {
 	struct tm *t_tm;
 	t_tm = localtime(&t);
-	t_tm->tm_year += 1900;	/* localtime×ª»»œá¹ûµÄtm_yearÊÇÏà¶ÔÖµ£¬ÐèÒª×ª³ÉŸø¶ÔÖµ */
+	t_tm->tm_year += 1900;
 	return *t_tm;
 }
 
@@ -91,7 +121,7 @@ void Time_SetUnixTime(time_t t)
 }
 
 
-void Time_SetCalendarTime(struct tm t)
+void sensClock::Time_SetCalendarTime(struct tm t)
 {
 	Time_SetUnixTime(Time_ConvCalendarToUnix(t));
 	return;
@@ -208,58 +238,58 @@ static void RTC_Configuration(void)
 //}
 
 
-void Time_Regulate(void)
-{
-  struct tm time;
+//void Time_Regulate(void)
+//{
+//  struct tm time;
 
-  memset(&time, 0 , sizeof(time) );	/* Çå¿Õœá¹¹Ìå */
+//  memset(&time, 0 , sizeof(time) );	/* Çå¿Õœá¹¹Ìå */
 
-  DEBUG.print("=======================Time Settings==========================\r\n");
-  DEBUG.print("Please Set Years between 1970 to 2037\r\n");
+//  DEBUG.print("=======================Time Settings==========================\r\n");
+//  DEBUG.print("Please Set Years between 1970 to 2037\r\n");
 
-  while ( time.tm_year>2037  || time.tm_year<1970)
-  {
-    time.tm_year =1970;
-  }
-  DEBUG.print("Set Years:  %d\r\n", time.tm_year);
+//  while ( time.tm_year>2037  || time.tm_year<1970)
+//  {
+//    time.tm_year =1970;
+//  }
+//  DEBUG.print("Set Years:  %d\r\n", time.tm_year);
 
-  DEBUG.print("Please Set Months between 01 to 12\r\n");
-  while (time.tm_mon >12 || time.tm_mon < 1 )
-  {
-    time.tm_mon= 1;
-  }
-  DEBUG.print("Set Months:  %d\r\n", time.tm_mon);
+//  DEBUG.print("Please Set Months between 01 to 12\r\n");
+//  while (time.tm_mon >12 || time.tm_mon < 1 )
+//  {
+//    time.tm_mon= 1;
+//  }
+//  DEBUG.print("Set Months:  %d\r\n", time.tm_mon);
 
-  DEBUG.print("Please Set Days between 01 to 31\r\n");
-  while (time.tm_mday >31 ||time.tm_mday <1 )
-  {
-    time.tm_mday =1;
-  }
-  DEBUG.print("Set Days:  %d\r\n", time.tm_mday);
+//  DEBUG.print("Please Set Days between 01 to 31\r\n");
+//  while (time.tm_mday >31 ||time.tm_mday <1 )
+//  {
+//    time.tm_mday =1;
+//  }
+//  DEBUG.print("Set Days:  %d\r\n", time.tm_mday);
 
-  DEBUG.print("Please Set Hours between 01 to 23\r\n");
-  while (time.tm_hour >23 ||time.tm_hour <1 )
-  {
-    time.tm_hour = 12;
-  }
-  DEBUG.print("Set Hours:  %d\r\n", time.tm_hour);
+//  DEBUG.print("Please Set Hours between 01 to 23\r\n");
+//  while (time.tm_hour >23 ||time.tm_hour <1 )
+//  {
+//    time.tm_hour = 12;
+//  }
+//  DEBUG.print("Set Hours:  %d\r\n", time.tm_hour);
 
-  DEBUG.print("Please Set Minutes between 01 to 59\r\n");
-  while (time.tm_min >59 || time.tm_min <1 )
-  {
-    time.tm_min = 1;
-  }
-  DEBUG.print("Set Minutes:  %d\r\n", time.tm_min);
+//  DEBUG.print("Please Set Minutes between 01 to 59\r\n");
+//  while (time.tm_min >59 || time.tm_min <1 )
+//  {
+//    time.tm_min = 1;
+//  }
+//  DEBUG.print("Set Minutes:  %d\r\n", time.tm_min);
 
-  DEBUG.print("Please Set Seconds between 01 to 59\r\n");
-  while (time.tm_sec >59 || time.tm_sec <1 )
-  {
-    time.tm_sec = 1;
-  }
-  DEBUG.print("Set Seconds:  %d\r\n", time.tm_sec);
-  /* Return the value to store in RTC counter register */
-  Time_SetCalendarTime(time);
-}
+//  DEBUG.print("Please Set Seconds between 01 to 59\r\n");
+//  while (time.tm_sec >59 || time.tm_sec <1 )
+//  {
+//    time.tm_sec = 1;
+//  }
+//  DEBUG.print("Set Seconds:  %d\r\n", time.tm_sec);
+//  /* Return the value to store in RTC counter register */
+//  Time_SetCalendarTime(time);
+//}
 
 void RTC_Init(void)
 {
@@ -331,38 +361,15 @@ DEBUG.print("Synced RTC....\r\n");
 }
 
 
-//void Time_Display(void)
-//{
-//   struct tm time;
-//   time = Time_GetCalendarTime();
-//   DEBUG.print("Time: %d-%d-%d   %02d:%02d:%02d \r\n", time.tm_year, \
-//		   time.tm_mon+1, time.tm_mday,\
-//		   time.tm_hour, time.tm_min, time.tm_sec);
-//}
 extern "C"
 {
 void RTC_IRQHandler(void)
 {
-   static uint8_t Display;
-   if (RTC_GetITStatus(RTC_IT_SEC) != RESET)
-  {
-    /* Clear the RTC Second interrupt */
-    RTC_ClearITPendingBit(RTC_IT_SEC);
-
-	if( Display )
+	static uint8_t Display;
+	if (RTC_GetITStatus(RTC_IT_SEC) != RESET)
 	{
-	   /* LED1-ON LED2-OFF */
-	   GPIO_SetBits(GPIOB , GPIO_Pin_0);
-	   GPIO_ResetBits(GPIOB , GPIO_Pin_1);
+		/* Clear the RTC Second interrupt */
+		RTC_ClearITPendingBit(RTC_IT_SEC);
 	}
-	else
-	{
-	   /* LED1-OFF LED2-ON */
-	   GPIO_ResetBits(GPIOB , GPIO_Pin_0);
-	   GPIO_SetBits(GPIOB , GPIO_Pin_1);
-	}
-	Display = ~Display;
-    //Time_Display();
-  }
 }
 }
