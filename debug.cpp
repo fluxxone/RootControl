@@ -82,12 +82,12 @@ void Debug::print(const char* format, ...)
 	va_list args;
 	va_start(args, format);
 
-	vsnprintf(buffer,sizeof(buffer),format,args);
+	vsnprintf(_buffer,sizeof(_buffer),format,args);
 
 	va_end(args);
 
-	USART_print(buffer);
-	_logfile.Write(buffer,strlen(buffer));
+	USART_print(_buffer);
+	_logfile.Write(_buffer,strlen(_buffer));
 	_logfile.Sync();
 }
 

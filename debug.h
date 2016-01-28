@@ -11,7 +11,7 @@ public:
 	void print(const char* format, ...);
 protected:
 	Debug();
-	char buffer[255];
+	char _buffer[255];
 	SDFile _logfile;
 };
 
