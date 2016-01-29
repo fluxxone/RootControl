@@ -109,7 +109,7 @@ void abort(void)
     /* Abort called */
     while(1);
 }
-void _exit(void)
+void _exit(int arg)
 {
 	while(1);
 }

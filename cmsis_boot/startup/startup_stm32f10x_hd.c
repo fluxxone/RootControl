@@ -258,7 +258,7 @@ void Default_Reset_Handler(void)
 #ifdef SYSTEM_LIB
   extern int _start(void);
   _start();
-  extern void _exit(void);
+  //extern void _exit(void);
 #else
   main();
 #endif
